@@ -19,15 +19,43 @@
 #define QUIT  -2
 
 int input(void);
+void printPort(void);
 
-int main(int argc, char** argv) {
+int main(void) {
+    
+    int mask= 0xFF;
+    int in;
+    
+    printPort();
 
-    while(input()!=QUIT){
+    while(in!=QUIT){
         
+        in = input();
         
+        if((in>=0)&&(in<=7)){
+        
+            bitToggle('A',in);
+            
+        }
+        else if ((in=='s')||(in=='S')){
+        
+            maskOn('A',mask);
+            
+        }
+        else if ((in=='c')||(in=='C')){
+        
+            maskOff('A',mask);
+            
+        }
+        else if((in=='t')||(in=='T')){
+        
+            maskToggle('A',mask);
+        
+        }     
+        
+        printPort();
     
-    }
-    
+    }   
     
 }
 
@@ -38,19 +66,19 @@ int input(void){
 
     while((c=getchar())!= '\n'){
     
-        if((c>=0)&&(c<=7)){
+        if((c>='0')&&(c<='7')){
         
-            ret = c - '0';
+            ret = c-'0';
             cont++;
         
         }
-        if((c=='t')||(c=='T')||(c=='c')||(c=='C')||(c=='s')||(c=='S')){
+        else if((c=='t')||(c=='T')||(c=='c')||(c=='C')||(c=='s')||(c=='S')){
         
             ret = c;
             cont++;
         
         }
-        if((c=='q')||(c=='Q')){
+        else if((c=='q')||(c=='Q')){
         
             ret = QUIT;
             cont++;
@@ -70,28 +98,26 @@ int input(void){
 
 }
 
-void printPort(void){
-
-    int i;
+void printPort (void)
+{
+    int i=0;
+       
+    printf("|");
     
-    printf('|');
-    
-    for(i=0;i<8;i++){
+    for(i=0; i<=7;i++)
+    {
         
-        if(bitGet('A',i)==1){
-        
-            printf('+');
-            
+        if(bitGet('a',i))    //Si bitGet devuelve 1, porque el bit esta prendido
+        {
+            printf("*");        // imprimo un *
         }
-        else if(bitGet('A',i)==0){
-        
-            printf(' ');
-            
+        else                    //Caso contrario (si devuelve un 0) 
+        {
+            printf(" ");        // imprimo un espacio
         }
         
-        printf('|');
-        
-    
+        printf("|");
     }
-    printf('\n');
+    
+    printf("\n");
 }

@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 
-#include "PortControl.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -61,24 +60,24 @@ void bitClr(char p , int b){
     
         uint16_t mask = MASK16; //Definimos mask como la mask16 
         mask <<= b; //Pusheamos a izq. cuantas veces se haya pedido
-        mask = ~mask; //Negamos mask para poder hacer AND y no modificar todos los bits
-        port.D &= mask; //Hacemos AND para modificar solo ese bit en VALOR = 0
+        //Negamos mask para poder hacer AND y no modificar todos los bits
+        port.D &= ~mask; //Hacemos AND para modificar solo ese bit en VALOR = 0
         
     }
     else if(((p== 'b')||(p=='B')) && (b>=0) && (b<=7)){
     
         uint8_t mask = MASK8; //Definimos mask como la mask8
         mask <<= b; //Pusheamos a izq. cuantas veces se haya pedido
-        mask = ~mask; //Negamos mask para poder hacer AND y no modificar todos los bits
-        port.B |= mask; //Hacemos AND para modificar solo ese bit en VALOR = 0
+        //Negamos mask para poder hacer AND y no modificar todos los bits
+        port.B |= ~mask; //Hacemos AND para modificar solo ese bit en VALOR = 0
         
     }
     else if(((p== 'a')||(p=='A')) && (b>=0) && (b<=7)){
     
         uint8_t mask = MASK8; //Definimos mask como la mask8
         mask <<= b; //Pusheamos a izq. cuantas veces se haya pedido
-        mask = ~mask; //Negamos mask para poder hacer AND y no modificar todos los bits
-        port.A |= mask; //Hacemos AND para modificar solo ese bit en VALOR = 0
+        //Negamos mask para poder hacer AND y no modificar todos los bits
+        port.A |= ~mask; //Hacemos AND para modificar solo ese bit en VALOR = 0
         
     }
 
