@@ -11,12 +11,14 @@
  * Created on October 25, 2020, 1:03 PM
  */
 
+#include "PortControl.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "PortControl.h"
 
 #define ERROR -3
-#define QUIT  -2
+#define PRIN -2
+#define FIN -1
 
 int input(void);
 void printPort(void);
@@ -25,78 +27,68 @@ int main(void) {
     
     int mask= 0xFF;
     int in;
-    
-    printPort();
-
-    while(in!=QUIT){
-        
-        in = input();
-        
-        if((in>=0)&&(in<=7)){
-        
-            bitToggle('A',in);
-            
+    printf("Ingrese un numero entre 0 y 7 para prender el LED correspondiente.\nIngrese s para prender todos, c para apagar todos, t para invertirlos y q para salir:\n");
+    do
+    {
+        printf("Puerto A: ");
+        printPort();    //Imprime las LEDs del puerto A.
+        printf("\n");
+        do
+        {
+            printf("\nIngrese un valor: ");
+            in = input(); //Se ingresa un valor.
+            if (in == ERROR)   //Avisa que lo ingresado es invalido.
+            {
+                printf("Se ingreso un numero invalido.\n");
+            }
         }
-        else if ((in=='s')||(in=='S')){
+        while (in == ERROR);   //Si lo ingresado es invalido vuelve a pedir el valor.
         
-            maskOn('A',mask);
-            
+        if ( (in >= 0) && (in <= 7) ) //Si se ingreso un numero, pone ese LED en 1.
+        {
+            bitSet ('A', in);
         }
-        else if ((in=='c')||(in=='C')){
-        
-            maskOff('A',mask);
-            
+        else if (in == 't')  //Si se ingreso t, se invierten los LEDs.
+        {
+            maskToggle('A', mask);
         }
-        else if((in=='t')||(in=='T')){
-        
-            maskToggle('A',mask);
-        
-        }     
-        
-        printPort();
-    
-    }   
-    
-}
-
-int input(void){
-    
-    char c;
-    int ret, cont=0;
-
-    while((c=getchar())!= '\n'){
-    
-        if((c>='0')&&(c<='7')){
-        
-            ret = c-'0';
-            cont++;
-        
+        else if (in == 'c')  //Si se ingreso c, se apagan todos los LEDs.
+        {
+            maskOff('A', mask);
         }
-        else if((c=='t')||(c=='T')||(c=='c')||(c=='C')||(c=='s')||(c=='S')){
-        
-            ret = c;
-            cont++;
-        
+        else if (in == 's')  //Si se ingreso s, se encienden todos los LEDs.
+        {
+            maskOn('A', mask);
         }
-        else if((c=='q')||(c=='Q')){
-        
-            ret = QUIT;
-            cont++;
-            
-        }
-        
-        if(cont>=2){
-        
-            ret = ERROR;
-            printf("Error en datos ingresados");
-            
-        }
-        
     }
-    
-    return ret;
-
+    while (in != 'q');   //Si se ingreso q, sale del programa.
 }
+
+int input (void)
+{
+    char c = getchar();
+    int estado = PRIN, rta = ERROR;    //estado permite ingresar al primer if solo una vez.
+    while (c != '\n')
+    {
+            if ( ( ((c >= '0') && (c <= '7')) || (c == 't') || (c == 'c') || (c == 's') || (c == 'q') ) && (estado != FIN) )    //Si se ingreso algo valido.
+            {
+                if ( (c >= '0') && (c <= '7') )
+                {
+                    c -= '0';   //Se transforma el numero de ASCII a decimal.
+                }
+                rta = c;
+                estado = FIN;   //Cambia el estado.
+            }
+            else
+            {
+                rta = ERROR;  //Si se ingreso algo invalido o no se ingreso nada devuelve error.
+                estado = FIN;
+            }
+            c = getchar();
+    }
+    return rta;
+}
+
 
 void printPort (void)
 {
